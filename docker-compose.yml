@@ -1,22 +1,12 @@
-version: "3.8"
-
-services:
-  node:
-    build: .
-    container_name: auctions_node
-    restart: always
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-
   nginx:
     image: nginx:latest
-    container_name: auctions_nginx
+    container_name: nginx-proxy
     restart: always
     ports:
       - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - node
+      - backend
+    networks:
+      - app-network
