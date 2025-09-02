@@ -1,28 +1,22 @@
 version: "3.8"
 
 services:
-  backend:
+  node:
     build: .
-    container_name: backend
+    container_name: auctions_node
     restart: always
     ports:
       - "3000:3000"
-    networks:
-      - app-network
+    environment:
+      - NODE_ENV=production
 
   nginx:
     image: nginx:latest
-    container_name: nginx
+    container_name: auctions_nginx
     restart: always
     ports:
       - "80:80"
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - backend
-    networks:
-      - app-network
-
-networks:
-  app-network:
-    driver: bridge
+      - node
