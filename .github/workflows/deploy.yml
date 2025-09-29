@@ -27,7 +27,7 @@ jobs:
       - name: Build Docker image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: my-backend-app
+          ECR_REPOSITORY: my-backend-repos
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
@@ -36,7 +36,7 @@ jobs:
       - name: Push Docker image to ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: my-backend-app
+          ECR_REPOSITORY: my-backend-repos
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
@@ -49,8 +49,8 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            sudo docker pull ${{ steps.login-ecr.outputs.registry }}/my-backend-app:latest
+            sudo docker pull ${{ steps.login-ecr.outputs.registry }}/my-backend-repos:latest
             sudo docker stop my-backend-service || true
             sudo docker rm my-backend-service || true
-            sudo docker run -d --name my-backend-service -p 3000:3000 ${{ steps.login-ecr.outputs.registry }}/my-backend-app:latest
+            sudo docker run -d --name my-backend-service -p 3000:3000 ${{ steps.login-ecr.outputs.registry }}/my-backend-repos:latest
             sudo docker system prune -f # Clean up old images
